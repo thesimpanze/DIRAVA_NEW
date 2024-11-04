@@ -42,7 +42,7 @@ const SpeedDetectorDashboard = () => {
 
   return (
     <div className="">
-      <div className=" flex justify-center font-display ">
+      <div className=" flex justify-center font-display bg-red ">
         <div className="fixed flex m-auto items-center mt-4 outline px-3 rounded-full py-1 hover:shadow-[5px_5px_0_0_rgba(0,0,0,1)] hover:scale-110 ease-in-out transition duration-300 delay-75 ">
           <ul className="flex gap-2 capitalize">
             <li className="hover:scale-110 ease-in-out duration-300 transition group"> tentang</li>
