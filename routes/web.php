@@ -7,16 +7,19 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('SpeedDetectorDashboard', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
 });
-
+Route::get('/showSpeed', [SpeedDetectionController::class, 'show'])->middleware(['auth', 'verified'])->name('speed.show');
 Route::get('/home', function(){
-    return Inertia::render('SpeedDetectorDashboard');
+    return Inertia::render('SpeedDetectorDashboard', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+    ]);
 });
 Route::post('/speed-detection', [SpeedDetectionController::class, 'store'])->name('speed.store');
 
@@ -29,5 +32,5 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
+Route::post('/deleteAll', [SpeedDetectionController::class, 'destroyAll'])->name('deleteAll');
 require __DIR__.'/auth.php';
