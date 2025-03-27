@@ -45,8 +45,8 @@ class SpeedDetectionController extends Controller
 
     public function show(SpeedDetection $speedDetection)
     {
-        return Inertia::render('SpeedDetections/Show', [
-            'speedDetection' => $speedDetection
+        return Inertia::render('Dashboard', [
+            'speedDetection' => SpeedDetection::orderBy('id', 'desc')->get()
         ]);
     }
 
@@ -65,7 +65,6 @@ class SpeedDetectionController extends Controller
             ], 422);
         }
 
-        // Cek jika ada data lain dengan kecepatan yang sama
         $existingSpeed = SpeedDetection::where('id', '!=', $speedDetection->id)
             ->where('last_speed', $validated['last_speed'])
             ->exists();
@@ -99,5 +98,9 @@ class SpeedDetectionController extends Controller
         return response()->json([
             'last_speed' => $lastSpeed ? $lastSpeed->last_speed : 0
         ]);
+    }
+    public function destroyAll(Request $request, SpeedDetection $speedDetection){
+        $speedDetection->truncate();
+        
     }
 }
