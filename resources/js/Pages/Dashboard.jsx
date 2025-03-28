@@ -1,13 +1,28 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Inertia } from "@inertiajs/inertia";
 import { Head, Link } from "@inertiajs/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import moment from "moment";
 import "moment/locale/id";
 
-import {AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, } from "recharts";
+
+import {
+    AreaChart,
+    Area,
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+} from "recharts";
+import DangerButton from "@/Components/DangerButton";
+import Modal from "@/Components/Modal";
 
 export default function Dashboard({ speedDetection }) {
+    const [isConfirmDataDeletion, setIsConfirmDataDeletion] = useState(false);
     useEffect(() => {
         if (!speedDetection) {
             Inertia.get("/showSpeed");
@@ -22,6 +37,14 @@ export default function Dashboard({ speedDetection }) {
             batas: item.speed_limit,
         })) || [];
     console.log("data wdwa:", speedDetection);
+    const closeModal = () => {
+        setIsConfirmDataDeletion(false);
+
+        
+    };
+    const confirmDataDeletion = () => {
+        setIsConfirmDataDeletion(true);
+    };
     return (
         <AuthenticatedLayout
             header={
@@ -120,7 +143,9 @@ export default function Dashboard({ speedDetection }) {
                             </div>
                         </div>
 
-                        <h1 className="m-3 mt-10 text-3xl font-bold text-center">History</h1>
+                        <h1 className="m-3 mt-10 text-3xl font-bold text-center">
+                            History
+                        </h1>
                         <div className="p-4 min-h-screen mx-3">
                             {speedDetection && speedDetection.length > 0 ? (
                                 <div className="overflow-x-auto bg-white rounded-lg shadow-[7px_7px_0_0_rgba(0,0,0,1)]">
@@ -168,14 +193,40 @@ export default function Dashboard({ speedDetection }) {
                                 </div>
                             )}
                             <div className=" text-right mt-8">
-                                <span className="bg-red-600 text-sm py-1 px-3 outline outline-black rounded-xl text-white">
-                                    <Link href={route("deleteAll")} method="post" as="button">{" "} Delete All  </Link>
-                                </span>
+                                <DangerButton  onClick={confirmDataDeletion}> 
+                                    Delete All
+                                </DangerButton>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <Modal show={isConfirmDataDeletion} onClose={closeModal}>
+                <div className="p-4">
+                    <h2 className="text-lg font-semibold mb-4">
+                        Delete All Data
+                    </h2>
+                    <p className="mb-4">
+                        Apakah anda yakin ingin menghapus semua data? 
+                    </p>
+                    <div className="flex justify-end">
+                        <DangerButton
+                            href={route("deleteAll")}
+                            method="post"
+                            as="button"
+                            className="mr-2"
+                        >
+                            Iya
+                        </DangerButton>
+                        <button
+                            onClick={closeModal}
+                            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 "
+                        >
+                            Tidak
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </AuthenticatedLayout>
     );
 }
